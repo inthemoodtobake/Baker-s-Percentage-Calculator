@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#8a5a44" />
+  <title>Baker's Percentage Calculator</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --surface: #ffffff;
+      --surface-soft: #fbf8f3;
+      --text: #2d2926;
+      --muted: #756d67;
+      --line: #e7ded5;
+      --primary: #8a5a44;
+      --primary-dark: #6c4332;
+      --accent: #d9b38c;
+      --danger: #b84444;
+      --success: #417a56;
+      --success-bg: #edf7f0;
+      --shadow: 0 14px 35px rgba(62, 43, 32, .08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Thai", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(217,179,140,.22), transparent 34%),
+        var(--bg);
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button, input { min-height: 44px; }
+
+    .app {
+      width: min(1040px, calc(100% - 28px));
+      margin: 0 auto;
+      padding:
+        max(32px, env(safe-area-inset-top))
+        max(0px, env(safe-area-inset-right))
+        max(50px, env(safe-area-inset-bottom))
+        max(0px, env(safe-area-inset-left));
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.08;
+    }
+
+    .language-switch {
+      display: inline-flex;
+      flex: 0 0 auto;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 8px 22px rgba(62,43,32,.06);
+    }
+    .lang-btn {
+      min-width: 46px;
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 10px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 750;
+    }
+    .lang-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .panel {
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(231,222,213,.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      align-items: end;
+    }
+    label {
+      display: grid;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+    input {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 11px 12px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(217,179,140,.18);
+    }
+    input[readonly] {
+      background: var(--surface-soft);
+      color: var(--primary-dark);
+      font-weight: 750;
+    }
+
+    .summary { margin-top: 16px; }
+    .stat {
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    .stat strong {
+      font-size: 22px;
+      letter-spacing: -.02em;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .heading-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+    .panel-head h2 { margin: 0; font-size: 19px; }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid rgba(65,122,86,.18);
+      font-size: 12px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .btn {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 11px;
+      font-weight: 700;
+      transition: transform .15s, background .15s, border-color .15s;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: var(--accent); }
+    .btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
+    .btn.primary:hover { background: var(--primary-dark); }
+    .btn.danger { color: var(--danger); }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 560px;
+      background: var(--surface);
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: #eee7df;
+      color: #4f4742;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    td input { padding: 9px 10px; border-radius: 9px; }
+    td.num, th.num { text-align: right; }
+    td.output {
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: 0; }
+    .remove {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--danger);
+      font-size: 18px;
+    }
+    .empty-row {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 20;
+      background: #2d2926;
+      color: white;
+      padding: 11px 15px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: .2s;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Tablet / iPad */
+    @media (max-width: 1024px) {
+      .app { width: min(100% - 24px, 920px); }
+      .panel { padding: 18px; }
+      .panel-head { align-items: flex-start; }
+      .actions { justify-content: flex-end; }
+      table { min-width: 0; }
+    }
+
+    /* Mobile */
+    @media (max-width: 700px) {
+      .app {
+        width: min(100% - 18px, 1040px);
+        padding-top: max(20px, env(safe-area-inset-top));
+      }
+      .hero { align-items: center; }
+      .panel { padding: 14px; border-radius: 15px; }
+      .controls { grid-template-columns: 1fr; }
+      .panel-head { align-items: stretch; flex-direction: column; }
+      .actions { width: 100%; }
+      .actions .btn { flex: 1 1 150px; }
+      input { font-size: 16px; } /* Prevent iOS auto zoom */
+    }
+
+    /* Small mobile: turn table rows into cards */
+    @media (max-width: 640px) {
+      .hero {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .language-switch { align-self: flex-end; }
+      h1 { font-size: clamp(27px, 9vw, 36px); }
+
+      .table-wrap {
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+      }
+      table {
+        min-width: 0;
+        background: transparent;
+      }
+      thead { display: none; }
+      tbody {
+        display: grid;
+        gap: 12px;
+      }
+      tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(105px, .55fr);
+        gap: 10px 12px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface);
+      }
+      tbody td {
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        text-align: left;
+      }
+      tbody td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 6px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      tbody td:first-child { grid-column: 1 / -1; }
+      tbody td.output {
+        text-align: left;
+        align-self: end;
+        padding: 11px 12px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--surface-soft);
+      }
+      tbody td:last-child {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+      }
+      tbody td:last-child::before { display: none; }
+      .empty-row {
+        display: block;
+        grid-column: 1 / -1;
+        padding: 20px;
+      }
+      .empty-row::before { display: none; }
+      .actions { display: grid; grid-template-columns: 1fr; }
+      .actions .btn { width: 100%; }
+      .toast {
+        right: 9px;
+        left: 9px;
+        bottom: max(9px, env(safe-area-inset-bottom));
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 380px) {
+      tbody tr { grid-template-columns: 1fr; }
+      tbody td:first-child,
+      tbody td:last-child { grid-column: auto; }
+      tbody td:last-child { justify-content: stretch; }
+      .remove { width: 100%; }
+    }
+
+    @media print {
+      body { background: white; }
+      .app { width: 100%; padding: 0; }
+      .actions, .remove, .language-switch { display: none !important; }
+      .panel { box-shadow: none; border: 1px solid #ccc; }
+      input { border: 0; padding: 0; }
+      input[readonly] { background: transparent; }
+      .table-wrap { overflow: visible; }
+      table { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <h1 data-i18n="title">Baker's Percentage Calculator</h1>
+      <div class="language-switch" aria-label="Language">
+        <button class="lang-btn active" type="button" data-lang="th">TH</button>
+        <button class="lang-btn" type="button" data-lang="en">EN</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="controls">
+        <label><span data-i18n="doughWeightLabel">น้ำหนักโดว์ต่อโลฟ (g)</span>
+          <input id="doughWeight" type="number" min="1" step="1" inputmode="numeric" value="650" />
+        </label>
+        <label><span data-i18n="quantityLabel">จำนวนโลฟ</span>
+          <input id="quantity" type="number" min="1" step="1" inputmode="numeric" value="1" />
+        </label>
+      </div>
+
+      <div class="summary">
+        <div class="stat">
+          <span data-i18n="totalDoughLabel">น้ำหนักโดว์รวม</span>
+          <strong id="totalDough">650 g</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="heading-group">
+          <h2 data-i18n="flourSection">Flour</h2>
+          <span class="status-badge" id="flourTotal">100%</span>
+        </div>
+        <div class="actions">
+          <button class="btn primary" type="button" id="addFlour" data-i18n="addFlour">+ เพิ่มแป้ง</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:48%" data-i18n="flourNameHeader">ประเภทแป้ง</th>
+              <th class="num" style="width:22%" data-i18n="flourPercentHeader">Flour %</th>
+              <th class="num" style="width:24%" data-i18n="weightHeader">น้ำหนัก (g)</th>
+              <th style="width:6%"></th>
+            </tr>
+          </thead>
+          <tbody id="flourBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 data-i18n="ingredientSection">ส่วนผสมอื่นๆ</h2>
+        <div class="actions">
+          <button class="btn primary" type="button" id="addIngredient" data-i18n="addIngredient">+ เพิ่มส่วนผสม</button>
+          <button class="btn" type="button" id="printBtn" data-i18n="printPdf">พิมพ์ / PDF</button>
+          <button class="btn danger" type="button" id="resetBtn" data-i18n="resetOriginal">กลับสู่สูตร Original</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:48%" data-i18n="ingredientHeader">ส่วนผสม</th>
+              <th class="num" style="width:22%" data-i18n="bakerPercentHeader">Baker %</th>
+              <th class="num" style="width:24%" data-i18n="weightHeader">น้ำหนัก (g)</th>
+              <th style="width:6%"></th>
+            </tr>
+          </thead>
+          <tbody id="ingredientBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const translations = {
+    th: {
+      pageTitle: "Baker's Percentage Calculator",
+      title: "Baker's Percentage Calculator",
+      doughWeightLabel: "น้ำหนักโดว์ต่อโลฟ (g)",
+      quantityLabel: "จำนวนโลฟ",
+      totalDoughLabel: "น้ำหนักโดว์รวม",
+      flourSection: "Flour",
+      ingredientSection: "ส่วนผสมอื่นๆ",
+      addFlour: "+ เพิ่มแป้งอื่นๆ",
+      addIngredient: "+ เพิ่มส่วนผสม",
+      printPdf: "พิมพ์ / PDF",
+      resetOriginal: "กลับสู่สูตร Original",
+      flourNameHeader: "ประเภทแป้ง",
+      flourPercentHeader: "Flour %",
+      ingredientHeader: "ส่วนผสม",
+      bakerPercentHeader: "Baker %",
+      weightHeader: "น้ำหนัก (g)",
+      flourPlaceholder: "ชื่อแป้ง",
+      ingredientPlaceholder: "ชื่อส่วนผสม",
+      removeFlour: "ลบแป้ง",
+      removeIngredient: "ลบส่วนผสม",
+      emptyIngredients: "ยังไม่มีส่วนผสม กด “เพิ่มส่วนผสม” เพื่อเริ่มต้น",
+      confirmReset: "ต้องการกลับสู่สูตร Original หรือไม่?",
+      flourLimit: "Flour ทุกประเภทต้องรวมกันเท่ากับ 100% ระบบปรับค่าให้อัตโนมัติ",
+      names: {
+        breadFlour: "แป้งขนมปัง",
+        water: "น้ำ",
+        liquidStarter: "Liquid Starter",
+        salt: "เกลือ"
+      }
+    },
+    en: {
+      pageTitle: "Baker's Percentage Calculator",
+      title: "Baker's Percentage Calculator",
+      doughWeightLabel: "Dough weight per loaf (g)",
+      quantityLabel: "Number of loaves",
+      totalDoughLabel: "Total dough weight",
+      flourSection: "Flour",
+      ingredientSection: "Other ingredients",
+      addFlour: "+ Add other flour",
+      addIngredient: "+ Add ingredient",
+      printPdf: "Print / PDF",
+      resetOriginal: "Reset to Original",
+      flourNameHeader: "Flour type",
+      flourPercentHeader: "Flour %",
+      ingredientHeader: "Ingredient",
+      bakerPercentHeader: "Baker %",
+      weightHeader: "Weight (g)",
+      flourPlaceholder: "Flour name",
+      ingredientPlaceholder: "Ingredient name",
+      removeFlour: "Remove flour",
+      removeIngredient: "Remove ingredient",
+      emptyIngredients: "No ingredients yet. Select “Add ingredient” to begin.",
+      confirmReset: "Reset to the Original recipe?",
+      flourLimit: "All flour types must total 100%. The values were adjusted automatically.",
+      names: {
+        breadFlour: "Bread Flour",
+        water: "Water",
+        liquidStarter: "Liquid Starter",
+        salt: "Salt"
+      }
+    }
+  };
+
+  const originalRecipe = {
+    doughWeight: 650,
+    quantity: 1,
+    flours: [
+      { key: "breadFlour", name: "", percent: 100 }
+    ],
+    ingredients: [
+      { key: "water", name: "", percent: 70 },
+      { key: "liquidStarter", name: "", percent: 30 },
+      { key: "salt", name: "", percent: 2 }
+    ]
+  };
+
+  function storageGet(key) {
+    try { return localStorage.getItem(key); } catch (_) { return null; }
+  }
+
+  function storageSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (_) {}
+  }
+
+  let currentLang = storageGet("bakersCalculatorLanguage") === "en" ? "en" : "th";
+  let flours = [];
+  let ingredients = [];
+
+  const $ = (id) => document.getElementById(id);
+  const flourBody = $("flourBody");
+  const ingredientBody = $("ingredientBody");
+  const number = (value) => Number.isFinite(Number(value)) ? Number(value) : 0;
+  const round1 = (value) => Math.round((number(value) + Number.EPSILON) * 10) / 10;
+
+  function copy(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function t(key) {
+    return translations[currentLang][key];
+  }
+
+  function fmt(value, digits = 1) {
+    return new Intl.NumberFormat(currentLang === "th" ? "th-TH" : "en-US", {
+      maximumFractionDigits: digits,
+      minimumFractionDigits: digits
+    }).format(value);
+  }
+
+  function escapeHtml(value = "") {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function displayName(item) {
+    return item.key ? translations[currentLang].names[item.key] : item.name;
+  }
+
+  function normalizePercent(value) {
+    return Math.max(0, round1(value));
+  }
+
+  function sanitizeQuantity() {
+    const quantity = Math.max(1, Math.round(number($("quantity").value) || 1));
+    $("quantity").value = quantity;
+    return quantity;
+  }
+
+  function rebalanceFlours(changedIndex = null) {
+    if (!flours.length) {
+      flours = [{ key: "breadFlour", name: "", percent: 100 }];
+    }
+
+    let secondaryTotal = flours.slice(1).reduce((sum, item) => sum + normalizePercent(item.percent), 0);
+
+    if (secondaryTotal > 100 && changedIndex !== null && changedIndex > 0) {
+      const excess = secondaryTotal - 100;
+      flours[changedIndex].percent = Math.max(0, round1(flours[changedIndex].percent - excess));
+      secondaryTotal = flours.slice(1).reduce((sum, item) => sum + normalizePercent(item.percent), 0);
+      toast(t("flourLimit"));
+    }
+
+    flours.forEach((item, index) => {
+      if (index > 0) item.percent = normalizePercent(item.percent);
+    });
+    flours[0].percent = round1(Math.max(0, 100 - secondaryTotal));
+  }
+
+  function flourRowTemplate(item, index) {
+    const isPrimary = index === 0;
+    return `<tr data-index="${index}">
+      <td data-label="${escapeHtml(t("flourNameHeader"))}"><input data-field="name" value="${escapeHtml(displayName(item))}" placeholder="${escapeHtml(t("flourPlaceholder"))}"></td>
+      <td data-label="${escapeHtml(t("flourPercentHeader"))}"><input data-field="percent" type="number" min="0" max="100" step="0.1" value="${item.percent}" ${isPrimary ? "readonly" : ""}></td>
+      <td class="output" data-label="${escapeHtml(t("weightHeader"))}" data-weight="${index}">0.0</td>
+      <td>${isPrimary ? "" : `<button class="remove" type="button" aria-label="${escapeHtml(t("removeFlour"))}" data-remove="${index}">×</button>`}</td>
+    </tr>`;
+  }
+
+  function ingredientRowTemplate(item, index) {
+    return `<tr data-index="${index}">
+      <td data-label="${escapeHtml(t("ingredientHeader"))}"><input data-field="name" value="${escapeHtml(displayName(item))}" placeholder="${escapeHtml(t("ingredientPlaceholder"))}"></td>
+      <td data-label="${escapeHtml(t("bakerPercentHeader"))}"><input data-field="percent" type="number" min="0" step="0.1" value="${item.percent}"></td>
+      <td class="output" data-label="${escapeHtml(t("weightHeader"))}" data-weight="${index}">0.0</td>
+      <td><button class="remove" type="button" aria-label="${escapeHtml(t("removeIngredient"))}" data-remove="${index}">×</button></td>
+    </tr>`;
+  }
+
+  function renderTables() {
+    rebalanceFlours();
+    flourBody.innerHTML = flours.map(flourRowTemplate).join("");
+    ingredientBody.innerHTML = ingredients.length
+      ? ingredients.map(ingredientRowTemplate).join("")
+      : `<tr><td colspan="4" class="empty-row" data-label="">${escapeHtml(t("emptyIngredients"))}</td></tr>`;
+    updateCalculations();
+  }
+
+  function updateCalculations() {
+    const doughWeight = Math.max(0, number($("doughWeight").value));
+    const quantity = Math.max(1, Math.round(number($("quantity").value) || 1));
+    const totalDough = doughWeight * quantity;
+    const ingredientPercentTotal = ingredients.reduce((sum, item) => sum + normalizePercent(item.percent), 0);
+    const totalFlourWeight = totalDough > 0 ? totalDough * 100 / (100 + ingredientPercentTotal) : 0;
+
+    $("totalDough").textContent = `${fmt(totalDough, 0)} g`;
+    $("flourTotal").textContent = "100%";
+
+    flours.forEach((item, index) => {
+      const percentInput = flourBody.querySelector(`tr[data-index="${index}"] input[data-field="percent"]`);
+      if (percentInput) percentInput.value = item.percent;
+      const output = flourBody.querySelector(`[data-weight="${index}"]`);
+      if (output) output.textContent = fmt(totalFlourWeight * item.percent / 100, 1);
+    });
+
+    ingredients.forEach((item, index) => {
+      const output = ingredientBody.querySelector(`[data-weight="${index}"]`);
+      if (output) output.textContent = fmt(totalFlourWeight * normalizePercent(item.percent) / 100, 1);
+    });
+  }
+
+  function applyLanguage() {
+    document.documentElement.lang = currentLang;
+    document.title = t("pageTitle");
+    document.querySelectorAll("[data-i18n]").forEach((element) => {
+      element.textContent = t(element.dataset.i18n);
+    });
+    document.querySelectorAll("[data-lang]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.lang === currentLang);
+    });
+    renderTables();
+  }
+
+  function resetToOriginal(askForConfirmation = true) {
+    if (askForConfirmation && !confirm(t("confirmReset"))) return;
+    const recipe = copy(originalRecipe);
+    $("doughWeight").value = recipe.doughWeight;
+    $("quantity").value = recipe.quantity;
+    flours = recipe.flours;
+    ingredients = recipe.ingredients;
+    renderTables();
+  }
+
+  function toast(message) {
+    const element = $("toast");
+    element.textContent = message;
+    element.classList.add("show");
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => element.classList.remove("show"), 2000);
+  }
+
+  flourBody.addEventListener("input", (event) => {
+    const row = event.target.closest("tr[data-index]");
+    if (!row || !event.target.dataset.field) return;
+
+    const index = Number(row.dataset.index);
+    const field = event.target.dataset.field;
+
+    if (field === "name") {
+      flours[index].key = null;
+      flours[index].name = event.target.value;
+      return;
+    }
+
+    flours[index].percent = normalizePercent(event.target.value);
+    rebalanceFlours(index);
+    updateCalculations();
+  });
+
+  flourBody.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-remove]");
+    if (!button) return;
+    flours.splice(Number(button.dataset.remove), 1);
+    rebalanceFlours();
+    renderTables();
+  });
+
+  ingredientBody.addEventListener("input", (event) => {
+    const row = event.target.closest("tr[data-index]");
+    if (!row || !event.target.dataset.field) return;
+
+    const index = Number(row.dataset.index);
+    const field = event.target.dataset.field;
+
+    if (field === "name") {
+      ingredients[index].key = null;
+      ingredients[index].name = event.target.value;
+      return;
+    }
+
+    ingredients[index].percent = normalizePercent(event.target.value);
+    updateCalculations();
+  });
+
+  ingredientBody.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-remove]");
+    if (!button) return;
+    ingredients.splice(Number(button.dataset.remove), 1);
+    renderTables();
+  });
+
+  $("addFlour").addEventListener("click", () => {
+    flours.push({ key: null, name: "", percent: 0 });
+    renderTables();
+    setTimeout(() => flourBody.querySelector('tr:last-child input[data-field="name"]')?.focus(), 0);
+  });
+
+  $("addIngredient").addEventListener("click", () => {
+    ingredients.push({ key: null, name: "", percent: 0 });
+    renderTables();
+    setTimeout(() => ingredientBody.querySelector('tr:last-child input[data-field="name"]')?.focus(), 0);
+  });
+
+  $("doughWeight").addEventListener("input", updateCalculations);
+  $("quantity").addEventListener("input", updateCalculations);
+  $("quantity").addEventListener("change", () => {
+    sanitizeQuantity();
+    updateCalculations();
+  });
+  $("printBtn").addEventListener("click", () => window.print());
+  $("resetBtn").addEventListener("click", () => resetToOriginal(true));
+
+  document.querySelectorAll("[data-lang]").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentLang = button.dataset.lang;
+      storageSet("bakersCalculatorLanguage", currentLang);
+      applyLanguage();
+    });
+  });
+
+  resetToOriginal(false);
+  applyLanguage();
+</script>
+</body>
+</html>
