@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#8a5a44" />
-  <title>เครื่องคำนวณ Baker's Percentage</title>
+  <title>Baker's Percentage Calculator</title>
   <style>
     :root {
       --bg: #f7f4ef;
@@ -24,6 +24,10 @@
     }
 
     * { box-sizing: border-box; }
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
     body {
       margin: 0;
       min-height: 100vh;
@@ -36,11 +40,16 @@
 
     button, input { font: inherit; }
     button { cursor: pointer; }
+    button, input { min-height: 44px; }
 
     .app {
       width: min(1040px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 32px 0 50px;
+      padding:
+        max(32px, env(safe-area-inset-top))
+        max(0px, env(safe-area-inset-right))
+        max(50px, env(safe-area-inset-bottom))
+        max(0px, env(safe-area-inset-left));
     }
 
     .hero {
@@ -104,6 +113,7 @@
     }
     input {
       width: 100%;
+      min-width: 0;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: var(--surface);
@@ -174,6 +184,7 @@
       gap: 8px;
     }
     .btn {
+      min-height: 44px;
       border: 1px solid var(--line);
       background: var(--surface);
       color: var(--text);
@@ -220,8 +231,8 @@
     }
     tr:last-child td { border-bottom: 0; }
     .remove {
-      width: 34px;
-      height: 34px;
+      width: 44px;
+      height: 44px;
       border-radius: 10px;
       border: 1px solid var(--line);
       background: white;
@@ -251,14 +262,114 @@
     }
     .toast.show { opacity: 1; transform: translateY(0); }
 
+    /* Tablet / iPad */
+    @media (max-width: 1024px) {
+      .app { width: min(100% - 24px, 920px); }
+      .panel { padding: 18px; }
+      .panel-head { align-items: flex-start; }
+      .actions { justify-content: flex-end; }
+      table { min-width: 0; }
+    }
+
+    /* Mobile */
     @media (max-width: 700px) {
-      .app { width: min(100% - 18px, 1040px); padding-top: 20px; }
+      .app {
+        width: min(100% - 18px, 1040px);
+        padding-top: max(20px, env(safe-area-inset-top));
+      }
       .hero { align-items: center; }
       .panel { padding: 14px; border-radius: 15px; }
       .controls { grid-template-columns: 1fr; }
-      .panel-head { align-items: flex-start; flex-direction: column; }
+      .panel-head { align-items: stretch; flex-direction: column; }
       .actions { width: 100%; }
-      .actions .btn { flex: 1 1 auto; }
+      .actions .btn { flex: 1 1 150px; }
+      input { font-size: 16px; } /* Prevent iOS auto zoom */
+    }
+
+    /* Small mobile: turn table rows into cards */
+    @media (max-width: 640px) {
+      .hero {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .language-switch { align-self: flex-end; }
+      h1 { font-size: clamp(27px, 9vw, 36px); }
+
+      .table-wrap {
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+      }
+      table {
+        min-width: 0;
+        background: transparent;
+      }
+      thead { display: none; }
+      tbody {
+        display: grid;
+        gap: 12px;
+      }
+      tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(105px, .55fr);
+        gap: 10px 12px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface);
+      }
+      tbody td {
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        text-align: left;
+      }
+      tbody td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 6px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      tbody td:first-child { grid-column: 1 / -1; }
+      tbody td.output {
+        text-align: left;
+        align-self: end;
+        padding: 11px 12px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--surface-soft);
+      }
+      tbody td:last-child {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+      }
+      tbody td:last-child::before { display: none; }
+      .empty-row {
+        display: block;
+        grid-column: 1 / -1;
+        padding: 20px;
+      }
+      .empty-row::before { display: none; }
+      .actions { display: grid; grid-template-columns: 1fr; }
+      .actions .btn { width: 100%; }
+      .toast {
+        right: 9px;
+        left: 9px;
+        bottom: max(9px, env(safe-area-inset-bottom));
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 380px) {
+      tbody tr { grid-template-columns: 1fr; }
+      tbody td:first-child,
+      tbody td:last-child { grid-column: auto; }
+      tbody td:last-child { justify-content: stretch; }
+      .remove { width: 100%; }
     }
 
     @media print {
@@ -276,7 +387,7 @@
 <body>
   <main class="app">
     <section class="hero">
-      <h1 data-i18n="title">เครื่องคำนวณ Baker's Percentage</h1>
+      <h1 data-i18n="title">Baker's Percentage Calculator</h1>
       <div class="language-switch" aria-label="Language">
         <button class="lang-btn active" type="button" data-lang="th">TH</button>
         <button class="lang-btn" type="button" data-lang="en">EN</button>
@@ -342,7 +453,7 @@
           <thead>
             <tr>
               <th style="width:48%" data-i18n="ingredientHeader">ส่วนผสม</th>
-              <th class="num" style="width:22%">Baker %</th>
+              <th class="num" style="width:22%" data-i18n="bakerPercentHeader">Baker %</th>
               <th class="num" style="width:24%" data-i18n="weightHeader">น้ำหนัก (g)</th>
               <th style="width:6%"></th>
             </tr>
@@ -358,20 +469,21 @@
 <script>
   const translations = {
     th: {
-      pageTitle: "เครื่องคำนวณ Baker's Percentage",
-      title: "เครื่องคำนวณ Baker's Percentage",
+      pageTitle: "Baker's Percentage Calculator",
+      title: "Baker's Percentage Calculator",
       doughWeightLabel: "น้ำหนักโดว์ต่อโลฟ (g)",
       quantityLabel: "จำนวนโลฟ",
       totalDoughLabel: "น้ำหนักโดว์รวม",
       flourSection: "Flour",
       ingredientSection: "ส่วนผสมอื่นๆ",
-      addFlour: "+ เพิ่มแป้ง",
+      addFlour: "+ เพิ่มแป้งอื่นๆ",
       addIngredient: "+ เพิ่มส่วนผสม",
       printPdf: "พิมพ์ / PDF",
       resetOriginal: "กลับสู่สูตร Original",
       flourNameHeader: "ประเภทแป้ง",
       flourPercentHeader: "Flour %",
       ingredientHeader: "ส่วนผสม",
+      bakerPercentHeader: "Baker %",
       weightHeader: "น้ำหนัก (g)",
       flourPlaceholder: "ชื่อแป้ง",
       ingredientPlaceholder: "ชื่อส่วนผสม",
@@ -395,13 +507,14 @@
       totalDoughLabel: "Total dough weight",
       flourSection: "Flour",
       ingredientSection: "Other ingredients",
-      addFlour: "+ Add flour",
+      addFlour: "+ Add other flour",
       addIngredient: "+ Add ingredient",
       printPdf: "Print / PDF",
       resetOriginal: "Reset to Original",
       flourNameHeader: "Flour type",
       flourPercentHeader: "Flour %",
       ingredientHeader: "Ingredient",
+      bakerPercentHeader: "Baker %",
       weightHeader: "Weight (g)",
       flourPlaceholder: "Flour name",
       ingredientPlaceholder: "Ingredient name",
@@ -511,18 +624,18 @@
   function flourRowTemplate(item, index) {
     const isPrimary = index === 0;
     return `<tr data-index="${index}">
-      <td><input data-field="name" value="${escapeHtml(displayName(item))}" placeholder="${escapeHtml(t("flourPlaceholder"))}"></td>
-      <td><input data-field="percent" type="number" min="0" max="100" step="0.1" value="${item.percent}" ${isPrimary ? "readonly" : ""}></td>
-      <td class="output" data-weight="${index}">0.0</td>
+      <td data-label="${escapeHtml(t("flourNameHeader"))}"><input data-field="name" value="${escapeHtml(displayName(item))}" placeholder="${escapeHtml(t("flourPlaceholder"))}"></td>
+      <td data-label="${escapeHtml(t("flourPercentHeader"))}"><input data-field="percent" type="number" min="0" max="100" step="0.1" value="${item.percent}" ${isPrimary ? "readonly" : ""}></td>
+      <td class="output" data-label="${escapeHtml(t("weightHeader"))}" data-weight="${index}">0.0</td>
       <td>${isPrimary ? "" : `<button class="remove" type="button" aria-label="${escapeHtml(t("removeFlour"))}" data-remove="${index}">×</button>`}</td>
     </tr>`;
   }
 
   function ingredientRowTemplate(item, index) {
     return `<tr data-index="${index}">
-      <td><input data-field="name" value="${escapeHtml(displayName(item))}" placeholder="${escapeHtml(t("ingredientPlaceholder"))}"></td>
-      <td><input data-field="percent" type="number" min="0" step="0.1" value="${item.percent}"></td>
-      <td class="output" data-weight="${index}">0.0</td>
+      <td data-label="${escapeHtml(t("ingredientHeader"))}"><input data-field="name" value="${escapeHtml(displayName(item))}" placeholder="${escapeHtml(t("ingredientPlaceholder"))}"></td>
+      <td data-label="${escapeHtml(t("bakerPercentHeader"))}"><input data-field="percent" type="number" min="0" step="0.1" value="${item.percent}"></td>
+      <td class="output" data-label="${escapeHtml(t("weightHeader"))}" data-weight="${index}">0.0</td>
       <td><button class="remove" type="button" aria-label="${escapeHtml(t("removeIngredient"))}" data-remove="${index}">×</button></td>
     </tr>`;
   }
@@ -532,7 +645,7 @@
     flourBody.innerHTML = flours.map(flourRowTemplate).join("");
     ingredientBody.innerHTML = ingredients.length
       ? ingredients.map(ingredientRowTemplate).join("")
-      : `<tr><td colspan="4" class="empty-row">${escapeHtml(t("emptyIngredients"))}</td></tr>`;
+      : `<tr><td colspan="4" class="empty-row" data-label="">${escapeHtml(t("emptyIngredients"))}</td></tr>`;
     updateCalculations();
   }
 
