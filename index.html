@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#8a5a44" />
   <title>Baker's Percentage Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap&v=2" rel="stylesheet">
   <style>
+
     :root {
       --bg: #f7f4ef;
       --surface: #ffffff;
@@ -27,18 +31,19 @@
     html {
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      font-synthesis: none;
     }
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Thai", sans-serif;
+      font-family: "IBM Plex Sans Thai", "Sukhumvit Set", "Leelawadee UI", "Thonburi", "Noto Sans Thai", system-ui, sans-serif;
       color: var(--text);
       background:
         radial-gradient(circle at top left, rgba(217,179,140,.22), transparent 34%),
         var(--bg);
     }
 
-    button, input { font: inherit; }
+    button, input, select, textarea, table { font: inherit; }
     button { cursor: pointer; }
     button, input { min-height: 44px; }
 
@@ -62,7 +67,9 @@
     h1 {
       margin: 0;
       font-size: clamp(28px, 4vw, 44px);
-      line-height: 1.08;
+      line-height: 1.12;
+      font-weight: 700;
+      letter-spacing: -.035em;
     }
 
     .language-switch {
@@ -81,7 +88,7 @@
       padding: 7px 10px;
       background: transparent;
       color: var(--muted);
-      font-weight: 750;
+      font-weight: 700;
     }
     .lang-btn.active {
       background: var(--primary);
@@ -109,7 +116,7 @@
       gap: 7px;
       font-size: 13px;
       color: var(--muted);
-      font-weight: 650;
+      font-weight: 600;
     }
     input {
       width: 100%;
@@ -129,7 +136,7 @@
     input[readonly] {
       background: var(--surface-soft);
       color: var(--primary-dark);
-      font-weight: 750;
+      font-weight: 700;
     }
 
     .summary { margin-top: 16px; }
@@ -174,7 +181,7 @@
       color: var(--success);
       border: 1px solid rgba(65,122,86,.18);
       font-size: 12px;
-      font-weight: 750;
+      font-weight: 700;
       white-space: nowrap;
     }
 
@@ -226,7 +233,7 @@
     td.output {
       font-variant-numeric: tabular-nums;
       text-align: right;
-      font-weight: 650;
+      font-weight: 600;
       white-space: nowrap;
     }
     tr:last-child td { border-bottom: 0; }
