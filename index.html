@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#8a5a44" />
   <title>Baker's Percentage Calculator</title>
-  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="icon" href="assets/logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap&v=2" rel="stylesheet">
@@ -58,53 +58,6 @@
         max(0px, env(safe-area-inset-left));
     }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 22px;
-    }
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-      color: var(--text);
-      text-decoration: none;
-    }
-    .brand-logo {
-      display: block;
-      width: 58px;
-      height: 58px;
-      flex: 0 0 58px;
-      border-radius: 16px;
-      box-shadow: 0 10px 24px rgba(62,43,32,.10);
-    }
-    .brand-copy {
-      min-width: 0;
-      line-height: 1.15;
-    }
-    .brand-name {
-      display: block;
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -.02em;
-    }
-    .brand-tagline {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 500;
-    }
-    .top-actions {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-      flex: 0 0 auto;
-    }
     .social-links {
       display: inline-flex;
       align-items: center;
@@ -142,7 +95,7 @@
     .hero {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       gap: 18px;
       margin-bottom: 22px;
     }
@@ -383,16 +336,6 @@
 
     /* Mobile */
     @media (max-width: 700px) {
-      .topbar {
-        align-items: flex-start;
-      }
-      .brand-logo {
-        width: 52px;
-        height: 52px;
-        flex-basis: 52px;
-      }
-      .brand-tagline { display: none; }
-      .top-actions { gap: 8px; }
       .app {
         width: min(100% - 18px, 1040px);
         padding-top: max(20px, env(safe-area-inset-top));
@@ -412,17 +355,6 @@
 
     /* Small mobile: turn table rows into cards */
     @media (max-width: 640px) {
-      .topbar {
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 14px;
-      }
-      .brand { flex: 1 1 190px; }
-      .top-actions {
-        flex: 0 0 auto;
-        margin-left: auto;
-      }
-      .brand-name { font-size: 15px; }
       .social-link { width: 42px; height: 42px; }
       .hero {
         flex-direction: column;
@@ -508,13 +440,6 @@
     }
 
     @media (max-width: 380px) {
-      .topbar { align-items: stretch; }
-      .brand { flex-basis: 100%; }
-      .top-actions {
-        width: 100%;
-        justify-content: space-between;
-        margin-left: 0;
-      }
       tbody tr { grid-template-columns: 1fr; }
       tbody td:first-child,
       tbody td:last-child { grid-column: auto; }
@@ -546,25 +471,12 @@
 </head>
 <body>
   <main class="app">
-    <header class="topbar">
-      <a class="brand" href="https://www.instagram.com/inthemoodtobake/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="In the Mood to Bake on Instagram">
-        <img class="brand-logo" src="assets/logo.png" alt="In the Mood to Bake logo">
-        <span class="brand-copy">
-          <span class="brand-name">In the Mood to Bake</span>
-          <span class="brand-tagline">Bake, calculate, create.</span>
-        </span>
-      </a>
-
-      <div class="top-actions">
-        <div class="language-switch" aria-label="Language">
-          <button class="lang-btn active" type="button" data-lang="th">TH</button>
-          <button class="lang-btn" type="button" data-lang="en">EN</button>
-        </div>
-      </div>
-    </header>
-
     <section class="hero">
       <h1 data-i18n="title">Baker's Percentage Calculator</h1>
+      <div class="language-switch" aria-label="Language">
+        <button class="lang-btn active" type="button" data-lang="th">TH</button>
+        <button class="lang-btn" type="button" data-lang="en">EN</button>
+      </div>
     </section>
 
     <section class="panel">
