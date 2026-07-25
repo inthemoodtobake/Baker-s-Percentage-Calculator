@@ -26,3 +26,12 @@
 
 ## การจัดเก็บข้อมูล
 ข้อมูลที่กรอกและกดบันทึกจะเก็บอยู่ในเว็บเบราว์เซอร์ของอุปกรณ์แต่ละเครื่อง ไม่ได้ส่งไปยังฐานข้อมูลส่วนกลาง
+
+
+## โลโก้และ Social Media
+
+- โลโก้ปัจจุบันอยู่ที่ `assets/logo.svg` และสามารถเปลี่ยนเป็นไฟล์โลโก้จริงได้โดยใช้ชื่อไฟล์เดิม
+- Favicon อยู่ที่ `assets/favicon.svg`
+- ปุ่ม Instagram เชื่อมไปที่ `https://www.instagram.com/inthemoodtobake/?hl=en`
+- ปุ่ม Facebook เชื่อมไปที่ `https://www.facebook.com/Inthemoodtobake`
+- เมื่อนำขึ้น GitHub Pages ต้องอัปโหลดโฟลเดอร์ `assets` ไปพร้อมกับ `index.html`
